@@ -54,7 +54,7 @@ TRAVEL_KEEP = {
 }
 # Music is trimmed to these channel ids (picked by hand on the TV).
 MUSIC_KEEP = {
-    "88Stereo.cr", "ActivaTV.es", "AfrobeatTVEntertainment.uk", "BTATV.ve", "BestofDanceTV.ee", "CKNOFM.ca",
+    "ActivaTV.es", "AfrobeatTVEntertainment.uk", "BTATV.ve", "BestofDanceTV.ee", "CKNOFM.ca",
     "CMCUSACountryMusicChannel.us", "ClubbingTV.us", "ConcertChannel.us", "DanceFM.cl", "DanceTVAlgorhythm.ee",
     "DanceTVDeepHouseDistrict.ee", "DanceTVHouseFloor.ee", "DanceTVTechnoWarehouse.ee", "DeluxeDance.de",
     "DeluxeRap.de", "HappyRadioTV.ua", "HeartRadioAruba.aw", "MTVBiggestPop.us", "MTVClassic.us",
@@ -71,6 +71,14 @@ MUSIC_KEEP = {
     "V2BEATTV.uk", "Vevo2K.us", "Vevo70s.us", "Vevo80s.us", "Vevo90s.us", "VevoCountry.us", "VevoHipHop.us",
     "VevoLatino.us", "VevoPop.us", "VevoRB.us", "VevoRetroRock.us", "VevoTrueSchoolHipHop.us",
     "XITE90sThrowback.us", "XITEHits.nl", "XITEJustChill.nl", "YoMTV.us"
+}
+# Channels removed by hand, by channel id; they stay out of every group.
+EXCLUDE = {
+    "13Realities.cl", "13T.cl", "1KZNTV.za", "30AGeorgiaHollywoodReview.us", "30ALionelNation.us",
+    "30ALoomeredTV.us", "30ARidiculousTV.us", "30ASidewalks.us", "30ATVClassicMovies.us", "30ATelevisionChannel.us",
+    "88Stereo.cr", "ABCNewsLive1.us", "ABCNewsLive10.us", "ABCNewsLive2.us", "ABCNewsLive3.us", "ABCNewsLive4.us",
+    "ABCNewsLive5.us", "ABCNewsLive6.us", "ABCNewsLive7.us", "ABCNewsLive8.us", "ABCNewsLive9.us",
+    "ANCTelevision.co", "AbejalesTV.ve", "AlloCine.cm", "Anaylos7.us", "AsianCrush.us", "Backstage.us", "WPLG101.us"
 }
 PER_CHANNEL = 2  # keep a fallback stream when one exists
 
@@ -116,7 +124,7 @@ def bare_ip(url):
 candidates = []
 for s in load("streams"):
     ch = channels.get(s["channel"])
-    if not ch or ch["is_nsfw"] or ch["closed"] or ch["id"] in blocked:
+    if not ch or ch["is_nsfw"] or ch["closed"] or ch["id"] in blocked or ch["id"] in EXCLUDE:
         continue
     if ("Geo-blocked" in s["labels"] and ch["country"] != "MX") or bare_ip(s["url"]):
         continue
