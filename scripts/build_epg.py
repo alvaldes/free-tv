@@ -13,6 +13,8 @@ if len(sys.argv) not in (4, 6):
     sys.exit(__doc__)
 M3U, PLUTO, OUT = sys.argv[1:4]
 CHANNELS, GRABBED = (sys.argv[4], Path(sys.argv[5])) if len(sys.argv) == 6 else (None, None)
+if GRABBED and not GRABBED.is_dir():
+    sys.exit(f"{GRABBED} is not a directory\n\n{__doc__}")
 HORIZON = timedelta(hours=36)  # keep the file small for the TV
 
 # One Pluto channel per tvg-id: a channel with two Pluto streams would otherwise get two overlapping schedules.
