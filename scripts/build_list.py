@@ -1,7 +1,8 @@
-"""Builds free.m3u from the iptv-org API dumps in DATA_DIR: Mexican public channels plus
-English/Spanish news from the US and Europe, plus English/Spanish
-entertainment channels from anywhere. Only streams that answer from this network are kept.
-Usage: python3 -I build_list.py <data dir> <out.m3u> [guide url]"""
+"""Writes candidates.m3u from the iptv-org API dumps in DATA_DIR: Mexican public channels, English/Spanish
+news from the US and Europe, and English/Spanish entertainment channels from anywhere, with only the
+streams that answer from this network. These are candidates, not the playlist: free.m3u is curated by hand
+with scripts/curate.py, which also skips the channels in data/rejected.json.
+Usage: python3 -I build_list.py <data dir> <out candidates.m3u>"""
 import ipaddress
 import json
 import sys
@@ -12,13 +13,11 @@ from urllib.parse import urlparse
 
 DATA = Path(sys.argv[1])
 OUT = Path(sys.argv[2])
-GUIDE = sys.argv[3] if len(sys.argv) > 3 else None
 EUROPE = set("AD AL AT BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GI GR HR HU IE IS IT LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS RU SE SI SK SM UA VA XK".split())
 MX_CATS = {"public", "legislative", "education", "culture"}
 LANGS = {"eng", "spa"}
 MX_PUBLIC = {"Canal 22 Nacional", "Canal Once", "Ingenio TV", "Canal 44", "RTQ Queretaro", "SICOM Television",
              "Sistema Michoacano de TV", "Telemax", "Tele Yucatan", "Tlaxcala TV", "XHGV-TDT", "SQCS Canal 4"}
-MX_SKIP = {"Presumiendo Mexico", "GikTVMX"}
 # Unlicensed restreams of cable channels; kept out on purpose.
 DENY_HOSTS = ("aynaott.com", "usnlive.com", "onnethn.com", "thestream.cyou", "j00r.us", "ddns.net",
               "aynascope.net", "mangora1.cfd", "skygo.mn", "gpcdn.net", "boldmss.com", "mjunoon.tv", "anixa.tv",
@@ -34,52 +33,6 @@ EXTRA_GROUPS = [
     ("Entertainment", {"entertainment"}),
 ]
 SKIP_CATS = {"religious", "shop", "xxx"}
-# Kids is trimmed to these name prefixes (picked by hand on the TV).
-KIDS_KEEP = ("ABC Entertains", "Avatar", "Forever Kids", "Las Tortugas Ninja", "Nickelodeon", "Pluto TV", "Smurf TV",
-             "Tom And Jerry", "Toonami", "Tortues Ninja", "Totally Turtles")
-# Travel & Lifestyle is trimmed to these channel ids (picked by hand on the TV).
-TRAVEL_KEEP = {
-    "AKCTVPuppies.us", "AntiquesRoadTrip.us", "ArubaTV.aw", "AspireTVLife.us", "BeachTVFloridaAlabama.us",
-    "BeachTVKeyWestFloridaKeys.us", "BeachTVMyrtleBeachTheGrandStrand.us", "BetterHealthTV.us", "BizTV.us",
-    "DroneTV.us", "DuckHuntingTV.us", "ElMueble.es", "FashionLifeStyle.ru", "FashionTV.ua", "FashionTVSecrets.fr",
-    "FunRoads.us", "HGTV.au", "HGTV.be", "HGTV.ca", "HGTV.cz", "HGTV.de", "HGTV.hu", "HGTV.ie", "HGTV.it",
-    "HGTV.nl", "HGTV.nz", "HGTV.pl", "HGTV.ru", "HGTV.tw", "HGTV.uk", "HGTV.us", "HobbyMaker.uk",
-    "HorseCountryTV.uk", "INFAST.nl", "INTRAVEL.nl", "InTrouble.nl", "KNOVCD411.us", "KaloopyTV.us", "Localish.us",
-    "LoveNature.ca", "LuxembourgGlobalRadioTV.lu", "MonsterJam.us", "MyDestinationTV.us", "NBCLX.us",
-    "NBCLXHome.us", "Okhotairybalka.ru", "OutdoorAmerica.us", "OutdoorChannel.us", "OutsideTV.us",
-    "PalmBeachesTV.us", "PeerTVSouthTyrol.it", "PlousTV.ve", "PlutoTVDiseno.de", "PlutoTVEstilodeVida.us",
-    "PoconoTelevisionNetwork.us", "PursuitUP.us", "RedBullTV.at", "SpaceLivepoweredbysen.uk", "SpikeOutdoors.us",
-    "SuperyachtTV.mc", "TVSTravelNetwork.us", "Teletur.do", "TheDesignNetwork.us", "TheJamieOliverChannel.us",
-    "TravelPlusAdventure.ru", "WaypointTV.us", "YachtingTV.cz"
-}
-# Music is trimmed to these channel ids (picked by hand on the TV).
-MUSIC_KEEP = {
-    "ActivaTV.es", "AfrobeatTVEntertainment.uk", "BTATV.ve", "BestofDanceTV.ee", "CKNOFM.ca",
-    "CMCUSACountryMusicChannel.us", "ClubbingTV.us", "ConcertChannel.us", "DanceFM.cl", "DanceTVAlgorhythm.ee",
-    "DanceTVDeepHouseDistrict.ee", "DanceTVHouseFloor.ee", "DanceTVTechnoWarehouse.ee", "DeluxeDance.de",
-    "DeluxeRap.de", "HappyRadioTV.ua", "HeartRadioAruba.aw", "MTVBiggestPop.us", "MTVClassic.us",
-    "MTVFlowLatino.us", "MTVSpankinNew.us", "MezzoLive.fr", "MovieMusicbyStingray.ca", "Now70s.uk", "Now80s.uk",
-    "Now90s00s.uk", "POPWorldTV.es", "RadioRumbaTV.pe", "RetromusicaTelevision.cl", "SpektraTV.es",
-    "StingrayCityscapes.ca", "StingrayClassicRock.ca", "StingrayClassica.ca", "StingrayCozyCafe.ca",
-    "StingrayDJAZZ.ca", "StingrayEasyListening.ca", "StingrayEverything80s.ca", "StingrayFlashback70s.ca",
-    "StingrayGreatestHits.ca", "StingrayGreatestHolidayHits.us", "StingrayHitList.ca", "StingrayHolidayHits.ca",
-    "StingrayHolidayscapes.ca", "StingrayHotCountry.ca", "StingrayJukeboxOldies.ca", "StingrayKaraoke.ca",
-    "StingrayNaturescape.ca", "StingrayNothinBut90s.ca", "StingrayPopAdult.ca", "StingrayRememberthe80s.ca",
-    "StingrayRockAlternative.ca", "StingrayRomanceLatino.ca", "StingraySmoothJazz.ca", "StingraySoulStorm.ca",
-    "StingrayTheSpa.ca", "StingrayTikTokRadio.ca", "StingrayTodaysLatinPop.ca", "StingrayiConcerts.ca",
-    "Thats70s.uk", "Thats80s.uk", "TheCountryNetwork.us", "Totalmusic.uk", "Totalmusic2000s.uk", "Totalmusic80s.uk",
-    "V2BEATTV.uk", "Vevo2K.us", "Vevo70s.us", "Vevo80s.us", "Vevo90s.us", "VevoCountry.us", "VevoHipHop.us",
-    "VevoLatino.us", "VevoPop.us", "VevoRB.us", "VevoRetroRock.us", "VevoTrueSchoolHipHop.us",
-    "XITE90sThrowback.us", "XITEHits.nl", "XITEJustChill.nl", "YoMTV.us"
-}
-# Channels removed by hand, by channel id; they stay out of every group.
-EXCLUDE = {
-    "13Realities.cl", "13T.cl", "1KZNTV.za", "30AGeorgiaHollywoodReview.us", "30ALionelNation.us",
-    "30ALoomeredTV.us", "30ARidiculousTV.us", "30ASidewalks.us", "30ATVClassicMovies.us", "30ATelevisionChannel.us",
-    "88Stereo.cr", "ABCNewsLive1.us", "ABCNewsLive10.us", "ABCNewsLive2.us", "ABCNewsLive3.us", "ABCNewsLive4.us",
-    "ABCNewsLive5.us", "ABCNewsLive6.us", "ABCNewsLive7.us", "ABCNewsLive8.us", "ABCNewsLive9.us",
-    "ANCTelevision.co", "AbejalesTV.ve", "AlloCine.cm", "Anaylos7.us", "AsianCrush.us", "Backstage.us", "WPLG101.us"
-}
 PER_CHANNEL = 2  # keep a fallback stream when one exists
 
 
@@ -98,7 +51,7 @@ blocked = {b["channel"] for b in load("blocklist")}
 def group_for(ch, feed):
     langs = set(feed["languages"]) if feed else set()
     cats = set(ch["categories"])
-    if ch["country"] == "MX" and ch["name"] not in MX_SKIP and (cats & MX_CATS or ch["name"] in MX_PUBLIC):
+    if ch["country"] == "MX" and (cats & MX_CATS or ch["name"] in MX_PUBLIC):
         return "Mexico Public"
     if not (langs & LANGS) or cats & SKIP_CATS:
         return None
@@ -124,7 +77,7 @@ def bare_ip(url):
 candidates = []
 for s in load("streams"):
     ch = channels.get(s["channel"])
-    if not ch or ch["is_nsfw"] or ch["closed"] or ch["id"] in blocked or ch["id"] in EXCLUDE:
+    if not ch or ch["is_nsfw"] or ch["closed"] or ch["id"] in blocked:
         continue
     if ("Geo-blocked" in s["labels"] and ch["country"] != "MX") or bare_ip(s["url"]):
         continue
@@ -135,12 +88,6 @@ for s in load("streams"):
         continue
     feed = feeds.get((ch["id"], s["feed"])) or next((f for (c, _), f in feeds.items() if c == ch["id"] and f["is_main"]), None)
     group = group_for(ch, feed)
-    if group == "Kids" and not ch["name"].startswith(KIDS_KEEP):
-        continue
-    if group == "Travel & Lifestyle" and ch["id"] not in TRAVEL_KEEP:
-        continue
-    if group == "Music" and ch["id"] not in MUSIC_KEEP:
-        continue
     if group:
         candidates.append((group, ch, feed, s))
 
@@ -167,7 +114,7 @@ with ThreadPoolExecutor(16) as pool:
 
 ORDER = ["Mexico Public", "News US", "News Spain", "News Europe"] + [name for name, _ in EXTRA_GROUPS]
 ok.sort(key=lambda x: (ORDER.index(x[0]), x[1]["name"].lower()))
-kept, lines = {}, [f'#EXTM3U x-tvg-url="{GUIDE}"' if GUIDE else "#EXTM3U"]
+kept, lines = {}, ["#EXTM3U"]
 for group, ch, feed, s in ok:
     if kept.get(ch["id"], 0) >= PER_CHANNEL:
         continue

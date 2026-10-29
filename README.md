@@ -14,8 +14,10 @@ but any player that reads M3U and XMLTV works.
 Mexican public channels, English and Spanish news from the US, Spain and the rest of Europe, and movies,
 series, documentaries, kids, music, travel and entertainment channels. Streams come from
 [iptv-org](https://github.com/iptv-org/iptv), checked to answer when the list was built. Streams on bare IP
-addresses, behind proxies, or on known restreaming hosts are left out on purpose. Kids, Travel & Lifestyle
-and Music are trimmed to the channels listed in `scripts/build_list.py`.
+addresses, behind proxies, or on known restreaming hosts are left out on purpose.
+
+The list is curated by hand: nothing joins it on its own. Channels taken out are recorded in
+`data/rejected.json` with their name, group and date, so they are not offered again.
 
 The guide covers about 70% of the channels: Pluto TV's schedule from [i.mjh.nz](https://i.mjh.nz), renamed
 to the playlist's `tvg-id`s, plus the [iptv-org grabber](https://github.com/iptv-org/epg) for the rest.
@@ -26,16 +28,29 @@ to the playlist's `tvg-id`s, plus the [iptv-org grabber](https://github.com/iptv
 Actions tab. It rebuilds the guide for the next 36 hours and publishes `free.m3u` and `guide.xml.gz` to
 GitHub Pages. The playlist itself only changes when you rebuild it.
 
-## Rebuilding the playlist
+## Adding and removing channels
+
+Look for new channels:
 
 ```sh
 scripts/fetch_data.sh                                    # iptv-org API dumps, about 25 MB
-python3 -I scripts/build_list.py data/iptv-data free.m3u https://alvaldes.github.io/free-tv/guide.xml.gz
+python3 -I scripts/build_list.py data/iptv-data candidates.m3u
+python3 -I scripts/curate.py new candidates.m3u --out new.m3u
 ```
 
-`build_list.py` checks every stream, so it takes a minute or two and the result varies a little between
-runs as free streams come and go. Channel numbers on the TV shift after each rebuild. Commit `free.m3u`;
-the guide follows it on the next run.
+`build_list.py` keeps the streams that pass the automatic filters and answer right now, so it takes a
+minute or two. `curate.py new` lists the candidates that are neither in `free.m3u` nor in
+`data/rejected.json`; `new.m3u` holds just those, for a look on the TV before deciding.
+
+Then approve or reject, by `tvg-id`:
+
+```sh
+python3 -I scripts/curate.py add candidates.m3u NewChannel.us OtherChannel.es
+python3 -I scripts/curate.py reject --candidates candidates.m3u NotForUs.us   # never offer it again
+python3 -I scripts/curate.py reject 13Realities.cl                            # take it out of free.m3u
+```
+
+Commit `free.m3u` and `data/rejected.json` together; the guide follows on the next run.
 
 The grabber's sites are picked on every run by `scripts/build_channels.py`: every English or Spanish site
 iptv-org has for a channel, one entry per site, and the guide takes each channel from the first of them

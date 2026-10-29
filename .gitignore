@@ -2,3 +2,5 @@ data/iptv-data/
 site/
 serve/
 __pycache__/
+candidates.m3u
+new.m3u
