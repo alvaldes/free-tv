@@ -29,15 +29,22 @@ GitHub Pages. The playlist itself only changes when you rebuild it.
 ## Rebuilding the playlist
 
 ```sh
-scripts/fetch_data.sh                                    # iptv-org API dumps, about 50 MB
+scripts/fetch_data.sh                                    # iptv-org API dumps, about 25 MB
 python3 -I scripts/build_list.py data/iptv-data free.m3u https://alvaldes.github.io/free-tv/guide.xml.gz
-git clone --depth 1 https://github.com/iptv-org/epg.git ../iptv-org-epg
-python3 -I scripts/build_channels.py free.m3u ../iptv-org-epg/sites data/custom.channels.xml
 ```
 
 `build_list.py` checks every stream, so it takes a minute or two and the result varies a little between
-runs as free streams come and go. Channel numbers on the TV shift after each rebuild. Commit `free.m3u`
-and `data/custom.channels.xml` together.
+runs as free streams come and go. Channel numbers on the TV shift after each rebuild. Commit `free.m3u`;
+the guide follows it on the next run.
 
-To build the guide locally: `(cd ../iptv-org-epg && npm ci --ignore-scripts)`, then
-`EPG_REPO=../iptv-org-epg scripts/update_guide.sh`, which writes `site/`.
+The grabber's sites are picked on every run by `scripts/build_channels.py`: every English or Spanish site
+iptv-org has for a channel, one entry per site, and the guide takes each channel from the first of them
+that returned programmes. Each site is grabbed in its own process, so a broken site only loses itself.
+
+To build the guide locally:
+
+```sh
+git clone --depth 1 https://github.com/iptv-org/epg.git ../iptv-org-epg
+(cd ../iptv-org-epg && npm ci --ignore-scripts)
+EPG_REPO=../iptv-org-epg scripts/update_guide.sh        # writes site/
+```
