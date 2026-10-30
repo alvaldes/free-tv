@@ -365,6 +365,18 @@
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
  },
+ "BTATV.ve": {
+  "name": "BTA TV",
+  "group": "Music",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
+ "BTV.ug": {
+  "name": "BTV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
  "BabyFirst.us": {
   "name": "BabyFirst",
   "group": "Kids",
@@ -394,6 +406,24 @@
   "group": "Music",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "Bellavision.do": {
+  "name": "Bellavision",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
+ "BeverlyHillbillies.us": {
+  "name": "Beverly Hillbillies",
+  "group": "Movies",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
+ "BeverlyHills90210.us": {
+  "name": "Beverly Hills 90210",
+  "group": "Series",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "BizzTV.tt": {
   "name": "Bizz TV",
@@ -425,6 +455,12 @@
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
  },
+ "BonchesLatinosTV.do": {
+  "name": "Bonches Latinos TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
  "BotflixRadioo.us": {
   "name": "Botflix Radioo",
   "group": "Music",
@@ -442,6 +478,12 @@
   "group": "Kids",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "BuenaTV.pr": {
+  "name": "Buena TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "BuenisimaRadioTV.co": {
   "name": "Buenisima Radio TV",
@@ -461,6 +503,12 @@
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
  },
+ "CBSNewsPhilly.us": {
+  "name": "CBS News Philly",
+  "group": "News US",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
  "CBeebies.uk": {
   "name": "CBeebies",
   "group": "Kids",
@@ -472,6 +520,12 @@
   "group": "Music",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "COCOTV.do": {
+  "name": "COCO TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "CadenaElite.es": {
   "name": "Cadena Elite",
@@ -502,6 +556,12 @@
   "group": "Kids",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "CanalPulpoTV.ar": {
+  "name": "Canal Pulpo TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "CartoonClassics.pl": {
   "name": "Cartoon Classics",
@@ -569,6 +629,18 @@
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
  },
+ "ClickTVChile.cl": {
+  "name": "ClickTV Chile",
+  "group": "Documentary & Science",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
+ "ColosalTV.cr": {
+  "name": "Colosal TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
  "ConectaTV.mx": {
   "name": "Conecta TV",
   "group": "Music",
@@ -605,6 +677,12 @@
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
  },
+ "CurroJimenez.us": {
+  "name": "Curro Jimenez",
+  "group": "Series",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
  "DMAX.it": {
   "name": "DMAX",
   "group": "Travel & Lifestyle",
@@ -628,6 +706,24 @@
   "group": "Music",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "DangerTV.us": {
+  "name": "Danger TV",
+  "group": "Documentary & Science",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
+ "DelReyTV.py": {
+  "name": "Del Rey TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
+ "DengulesofamedAllanSindberg.se": {
+  "name": "Den gule sofa med Allan Sindberg",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "DetectiveConan.us": {
   "name": "Detective Conan",
@@ -743,6 +839,12 @@
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
  },
+ "FORTTV.ug": {
+  "name": "FORT TV",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
+ },
  "FabulosaEstereo1005FM.pa": {
   "name": "Fabulosa Estereo 100.5 FM",
   "group": "Music",
@@ -754,6 +856,12 @@
   "group": "Music",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "FamilienfraBryggen.se": {
+  "name": "Familien fra Bryggen",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "FarraPlay.py": {
   "name": "Farra Play",
@@ -796,6 +904,12 @@
   "group": "Music",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "FrusnaVagar.se": {
+  "name": "Frusna Vagar",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "FuegoTV.do": {
   "name": "Fuego TV",
@@ -1252,6 +1366,12 @@
   "group": "Music",
   "date": "2026-10-29",
   "note": "trimmed from the group on the TV"
+ },
+ "MeritStreet.us": {
+  "name": "Merit Street",
+  "group": "Entertainment",
+  "date": "2026-10-29",
+  "note": "removed by hand"
  },
  "MetaleitorTV.us": {
   "name": "Metaleitor TV",
